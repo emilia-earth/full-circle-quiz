@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Full Circle Leadership</title>
+<meta name="description" content="Find where you lead in the eight steps of the Full Circle Leadership model.">
+<meta name="theme-color" content="#067840">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta property="og:title" content="Where do you lead in the circle?">
+<meta property="og:description" content="A 4-minute quiz on the eight kinds of leadership every project needs.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Faculty+Glyphic&family=Manrope:wght@400;500;700&display=swap">
+<style>
+:root{
+  --bg:#f3f5f1; --surface:#ffffff; --fg:#14201a; --muted:#5b6a61; --line:#d6ddd7;
+  --accent:#067840; --accent-soft:#e1efe6; --friend:#b5651d; --on-accent:#ffffff;
+  --display:"Faculty Glyphic", Georgia, serif;
+  --body:"Manrope", "Helvetica Neue", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark){:root{
+  --bg:#0f1512; --surface:#18201c; --fg:#e8eee9; --muted:#9aa89f; --line:#2c3730;
+  --accent:#3fb877; --accent-soft:#1c3427; --friend:#e39a55; --on-accent:#0f1512; color-scheme:dark}}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.55;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.wrap{max-width:560px;margin:0 auto;padding-inline:20px;padding-block:28px 48px;display:flex;flex-direction:column;gap:24px}
+h1,h2,h3{font-family:var(--display);text-transform:uppercase;font-weight:400;letter-spacing:.02em;text-wrap:balance;margin:0}
+h1{font-size:clamp(2rem,9vw,2.8rem);line-height:1.05}
+h2{font-size:1.6rem;line-height:1.15}
+h3{font-size:1rem}
+p{margin:0}
+.eyebrow{font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:700}
+.muted{color:var(--muted)}
+button{font:inherit;cursor:pointer;border:0}
+.btn{background:var(--accent);color:var(--on-accent);padding:14px 22px;border-radius:999px;font-weight:700;align-self:flex-start}
+.btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--line)}
+.btn:disabled{opacity:.6;cursor:wait}
+button:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+input{font:inherit;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--fg);width:100%}
+label{font-size:.85rem;font-weight:700;display:flex;flex-direction:column;gap:6px}
+.steps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;font-size:.85rem}
+.steps div{padding:10px 12px;background:var(--surface);border:1px solid var(--line);border-radius:10px}
+.steps b{display:block}
+.progress{height:4px;background:var(--line);border-radius:4px;overflow:hidden}
+.progress i{display:block;height:100%;background:var(--accent);transition:width .25s}
+.qtext{font-size:1.35rem;line-height:1.35;font-weight:500;min-height:5.5em}
+.scale{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.scale button{aspect-ratio:1;border-radius:50%;background:var(--surface);border:1.5px solid var(--line);color:var(--fg);font-weight:700;font-size:1.1rem}
+.scale button.on,.scale button:hover{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.ends{display:flex;justify-content:space-between;font-size:.8rem;color:var(--muted)}
+.nav{display:flex;justify-content:space-between;align-items:center}
+.link{background:none;color:var(--muted);text-decoration:underline;padding:4px 0}
+.chart{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:8px}
+.chart svg{width:100%;height:auto;display:block}
+.legend{display:flex;gap:16px;font-size:.85rem;padding:4px 8px 8px;flex-wrap:wrap}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;background:var(--c)}
+.card{display:flex;flex-direction:column;gap:6px}
+.tag{display:inline-block;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-weight:700;align-self:flex-start}
+.list{display:flex;flex-direction:column;gap:6px}
+.row{display:grid;grid-template-columns:7.5rem 1fr 2.2rem;gap:10px;align-items:center;font-size:.9rem}
+.bar{height:8px;background:var(--line);border-radius:8px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent)}
+.num{text-align:right;font-variant-numeric:tabular-nums;color:var(--muted)}
+.actions{display:flex;flex-wrap:wrap;gap:10px}
+.note{font-size:.8rem;color:var(--muted);border-top:1px solid var(--line);padding-top:16px}
+.note a{color:var(--accent)}
+.toast{font-size:.85rem;color:var(--accent);min-height:1.2em;word-break:break-all}
+@media (prefers-reduced-motion: reduce){.progress i{transition:none}}
+</style>
+</head>
+<body>
+<main class="wrap" id="app"><p class="muted">Loading…</p></main>
+<script>
+const SUPABASE_URL = "https://vzwcbcaeitafqmibzidn.supabase.co";
+const SUPABASE_KEY = "sb_publishable_mZvODs-FKfs7ckJ9WPaLgA_es449c_H";
+const H = {apikey:SUPABASE_KEY, Authorization:"Bearer "+SUPABASE_KEY, "Content-Type":"application/json"};
+
+const A = [
+ {step:"Sense",name:"The Nurturer",lead:"Empathy",shadow:"Overwhelm",
+  d:"You pick up on what others miss: a mood in the room, a concern mentioned in passing. You listen first and make it safe for people to speak.",
+  q:["I usually notice when someone on the team is struggling before they say anything.","People come to me to talk things through, even when it isn't about work.","I sense a recurring problem in conversations long before it shows up in a report."]},
+ {step:"Inquire",name:"The Facilitator",lead:"Context",shadow:"Permission-seeking",
+  d:"You turn a hunch into a shared question. You find out who has been here before, bring the right people together and only move when the group is ready.",
+  q:["Before acting on an idea, I check who has tried something similar before.","I enjoy bringing different people into a room to look at a problem together.","I'm comfortable dropping my first assumption when the conversation shows me a bigger picture."]},
+ {step:"Envision",name:"The Dreamer",lead:"Aspiration",shadow:"Distraction",
+  d:"You imagine a better future and make others want it too. New territory energises you, and your stories pull people along.",
+  q:["I regularly catch myself imagining how things could be completely different.","Unfamiliar, risky ideas excite me more than they worry me.","I can get people enthusiastic about something that doesn't exist yet."]},
+ {step:"Prototype",name:"The Hacker",lead:"Experimentation",shadow:"Obsession",
+  d:"You make ideas tangible fast. Rough but working versions, quick tests, real people trying things out.",
+  q:["I'd rather build a rough version this week than plan the perfect one for months.","I like finding the cheapest, fastest way to test whether an idea works.","I happily use whatever tools are at hand, even if the result is held together with tape."]},
+ {step:"Evaluate",name:"The Scientist",lead:"Measurement",shadow:"Cynicism",
+  d:"You care enough to be critical. You gather honest feedback, separate signal from noise and make sure the idea holds up before money is spent.",
+  q:["I ask for honest feedback and I take criticism as a sign people care.","Before investing more, I want data or evidence that the idea actually works.","I'm good at telling which feedback matters and which is just noise."]},
+ {step:"Operationalise",name:"The Negotiator",lead:"Implementation",shadow:"Ruthlessness",
+  d:"You make things real and make them stick. You know how the pieces connect and where to compromise without losing the point.",
+  q:["I enjoy figuring out how a new idea fits into the processes, tools and rules already in place.","I know which parts of a plan can bend and which ones can't.","I make sure things are documented so they keep working when I'm not around."]},
+ {step:"Maintain",name:"The Captain",lead:"Sustaining",shadow:"Bureaucracy",
+  d:"You keep the ship steady. You follow through, say no to distractions and are the reason people can trust that things get done.",
+  q:["When we commit to something, I make sure we follow through.","I'm the one who remembers deadlines, sends reminders and keeps things running.","I'm comfortable saying no to a shiny new idea so we can finish what we started."]},
+ {step:"Optimise",name:"The Perfectionist",lead:"Improvement",shadow:"Meddling",
+  d:"Comfortable is not good enough for you. You spot the loose ends, tighten them and start the cycle again.",
+  q:["When something has worked the same way for a while, I start looking for how to improve it.","I notice small inefficiencies that others have stopped seeing.","Questioning how we do things feels like loyalty to me, not disloyalty."]}
+];
+
+const Q=[]; A.forEach((a,i)=>a.q.forEach(t=>Q.push({a:i,t})));
+for(let i=Q.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[Q[i],Q[j]]=[Q[j],Q[i]];}
+let answers=new Array(Q.length).fill(0), idx=0, friend=null;
+const app=document.getElementById("app");
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const base=()=>location.href.split("#")[0];
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+
+async function loadResult(id){
+  const r=await fetch(`${SUPABASE_URL}/rest/v1/results?id=eq.${encodeURIComponent(id)}&select=id,name,scores`,{headers:H});
+  if(!r.ok) throw new Error("load"); const rows=await r.json(); return rows[0]||null;
+}
+async function saveResult(name,scores){
+  const r=await fetch(`${SUPABASE_URL}/rest/v1/results`,{method:"POST",headers:{...H,Prefer:"return=representation"},body:JSON.stringify({name:name||null,scores})});
+  if(!r.ok) throw new Error("save"); return (await r.json())[0];
+}
+
+function intro(){
+  app.innerHTML=`
+    <span class="eyebrow">Leadership quiz · 24 questions · 4 min</span>
+    <h1>Where do you lead in the circle?</h1>
+    <p>Full Circle Leadership sees leadership as eight steps that every project needs, from sensing a problem to improving the solution. Most people are strong in a few and quieter in others. Find out where your strengths sit.</p>
+    <div class="steps">${A.map(a=>`<div><b>${a.step}</b><span class="muted">${a.name}</span></div>`).join("")}</div>
+    <div class="actions"><button class="btn" id="go">Start the quiz</button>
+    ${store.get("fcl_mine")?`<button class="btn ghost" id="mine">See my last result</button>`:""}</div>
+    <p class="note">Based on the Full Circle Leadership model by Alanna Irving (Enspiral). <a href="https://medium.com/enspiral-tales/beyond-dreamers-vs-doers-full-circle-leadership-869557da1248" target="_blank" rel="noopener">Read the original article</a>. An informal self-reflection tool.</p>`;
+  go("go",()=>{idx=0;answers.fill(0);question();});
+  go("mine",()=>{location.hash="#/r/"+store.get("fcl_mine");});
+}
+function go(id,fn){const el=document.getElementById(id); if(el) el.onclick=fn;}
+
+function question(){
+  const q=Q[idx];
+  app.innerHTML=`
+    <div class="nav"><span class="eyebrow">Question ${idx+1} of ${Q.length}</span>
+      <button class="link" id="back" ${idx===0?"hidden":""}>Back</button></div>
+    <div class="progress"><i style="width:${idx/Q.length*100}%"></i></div>
+    <p class="qtext">${q.t}</p>
+    <div class="scale">${[1,2,3,4,5].map(v=>`<button data-v="${v}" class="${answers[idx]===v?"on":""}" aria-label="${v} of 5">${v}</button>`).join("")}</div>
+    <div class="ends"><span>Not me</span><span>Totally me</span></div>`;
+  app.querySelectorAll(".scale button").forEach(b=>b.onclick=()=>{answers[idx]=+b.dataset.v; if(idx<Q.length-1){idx++;question();} else saveScreen();});
+  go("back",()=>{idx--;question();});
+}
+function scores(){const s=new Array(8).fill(0); Q.forEach((q,i)=>s[q.a]+=answers[i]); return s;}
+
+function saveScreen(){
+  app.innerHTML=`
+    <span class="eyebrow">Almost there</span>
+    <h2>Put a name on your circle</h2>
+    <p class="muted">Your friends will see this name when you share your result. Leave it empty to stay anonymous.</p>
+    <label for="nm">Your name<input id="nm" maxlength="40" autocomplete="given-name" placeholder="e.g. Emilia"></label>
+    <button class="btn" id="see">See my result</button><p class="toast" id="toast"></p>`;
+  go("see",async()=>{
+    const b=document.getElementById("see"); b.disabled=true; b.textContent="Saving…";
+    const s=scores(), name=document.getElementById("nm").value.trim();
+    try{ const row=await saveResult(name,s); store.set("fcl_mine",row.id);
+      location.hash = friend?`#/r/${friend.id}/vs/${row.id}`:`#/r/${row.id}`; }
+    catch(e){ document.getElementById("toast").textContent="Couldn't save right now. Showing your result without a share link."; render({id:null,name,scores:s}); }
+  });
+}
+
+function radar(sets){
+  const c=180,R=118,n=8;
+  const pt=(i,r)=>{const a=-Math.PI/2+i*2*Math.PI/n;return [c+r*Math.cos(a),c+r*Math.sin(a)];};
+  const val=v=>Math.max(.04,(v-3)/12);
+  let g="";
+  [.25,.5,.75,1].forEach(f=>g+=`<polygon points="${A.map((_,i)=>pt(i,R*f).join(",")).join(" ")}" fill="none" stroke="var(--line)"/>`);
+  A.forEach((_,i)=>{const[x,y]=pt(i,R);g+=`<line x1="${c}" y1="${c}" x2="${x}" y2="${y}" stroke="var(--line)"/>`;});
+  sets.forEach(({s,col})=>{
+    g+=`<polygon points="${s.map((v,i)=>pt(i,R*val(v)).join(",")).join(" ")}" fill="${col}" fill-opacity=".2" stroke="${col}" stroke-width="2.5" stroke-linejoin="round"/>`;
+    s.forEach((v,i)=>{const[x,y]=pt(i,R*val(v));g+=`<circle cx="${x}" cy="${y}" r="4" fill="${col}"/>`;});
+  });
+  A.forEach((a,i)=>{const[x,y]=pt(i,R+30);const an=Math.abs(x-c)<5?"middle":(x>c?"start":"end");
+    g+=`<text x="${x}" y="${y}" text-anchor="${an}" dominant-baseline="middle" fill="var(--fg)" font-size="12" font-weight="700" font-family="Manrope, sans-serif">${a.step}</text>`;});
+  return `<svg viewBox="-40 0 440 360" role="img" aria-label="Radar chart of leadership scores">${g}</svg>`;
+}
+
+function render(me, other){
+  const s=me.scores, pct=v=>Math.round((v-3)/12*100);
+  const order=s.map((_,i)=>i).sort((x,y)=>s[y]-s[x]);
+  const top=A[order[0]], second=A[order[1]], low=A[order[7]];
+  const mine=store.get("fcl_mine")===me.id;
+  const who=me.name?esc(me.name):(mine?"You":"Someone");
+  let compare="";
+  if(other){
+    const gaps=A.map((a,i)=>({a,d:other.scores[i]-s[i]})).sort((x,y)=>y.d-x.d);
+    compare=`<div class="card"><span class="tag">Together</span>
+      <p><b>${esc(other.name||"Your friend")}</b> is strongest where you lean on others most: <b>${gaps[0].a.step}</b>. You bring the most where they don't: <b>${gaps[7].a.step}</b>.</p></div>`;
+  }
+  app.innerHTML=`
+    <span class="eyebrow">${other?"Side by side":(mine?"Your result":`${who}'s result`)}</span>
+    <h2>${other?`${who} + ${esc(other.name||"friend")}`:top.name}</h2>
+    ${other?"":`<p>${top.d}</p>`}
+    <div class="chart">${radar(other?[{s:other.scores,col:"var(--friend)"},{s,col:"var(--accent)"}]:[{s,col:"var(--accent)"}])}
+      ${other?`<div class="legend"><span style="--c:var(--accent)">${who}</span><span style="--c:var(--friend)">${esc(other.name||"Friend")}</span></div>`:""}</div>
+    ${compare}
+    ${other?"":`
+    <div class="card"><span class="tag">Strongest · ${top.step}</span>
+      <p class="muted">Leadership of ${top.lead.toLowerCase()}. Watch the shadow side: ${top.shadow.toLowerCase()}.</p></div>
+    <div class="card"><span class="tag">Second · ${second.step}</span><h3>${second.name}</h3><p class="muted">${second.d}</p></div>
+    <div class="card"><span class="tag">Growth edge · ${low.step}</span><h3>${low.name}</h3>
+      <p class="muted">This is where you lean on others most. Look for a collaborator who is strong here, or practise it on a small project.</p></div>
+    <div class="list">${order.map(i=>`<div class="row"><span>${A[i].step}</span><span class="bar"><i style="width:${pct(s[i])}%"></i></span><span class="num">${pct(s[i])}</span></div>`).join("")}</div>`}
+    <div class="actions">
+      ${me.id&&mine&&!other?`<button class="btn" id="share">Share my result</button>`:""}
+      ${!mine&&!other?`<button class="btn" id="cmp">Take the quiz and compare</button>`:""}
+      <button class="btn ghost" id="home">${mine||other?"Start over":"About the quiz"}</button>
+    </div>
+    <p class="toast" id="toast"></p>
+    <p class="note">Nobody covers the whole circle alone. Teams need all eight kinds of leadership, so compare charts and see who completes yours.</p>`;
+  go("home",()=>{friend=null;location.hash="";intro();});
+  go("cmp",()=>{friend=me;answers.fill(0);idx=0;question();});
+  go("share",async()=>{
+    const url=`${base()}#/r/${me.id}`, t=document.getElementById("toast");
+    if(navigator.share){try{await navigator.share({title:"My Full Circle Leadership result",url});return;}catch(e){}}
+    navigator.clipboard.writeText(url).then(()=>t.textContent="Link copied. Send it to your friends.").catch(()=>t.textContent=url);
+  });
+  window.scrollTo(0,0);
+}
+
+async function route(){
+  const m=location.hash.match(/^#\/r\/([a-f0-9]{8})(?:\/vs\/([a-f0-9]{8}))?$/);
+  if(!m){intro();return;}
+  app.innerHTML=`<p class="muted">Loading result…</p>`;
+  try{
+    if(m[2]){ const [f,me]=await Promise.all([loadResult(m[1]),loadResult(m[2])]); if(!f||!me) throw 0; render(me,f); }
+    else { const r=await loadResult(m[1]); if(!r) throw 0; render(r); }
+  }catch(e){ app.innerHTML=`<h2>Result not found</h2><p class="muted">This link may be mistyped. You can still take the quiz.</p><button class="btn" id="home">Start the quiz</button>`; go("home",()=>{location.hash="";intro();}); }
+}
+window.addEventListener("hashchange",route);
+route();
+</script>
+</body>
+</html>
