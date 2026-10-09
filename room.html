@@ -89,7 +89,7 @@ p{margin:0}
         <label for="tsize" class="muted" style="font-size:.85rem">People per team</label>
         <select id="tsize" class="btn"><option>2</option><option selected>3</option><option>4</option><option>5</option><option>6</option></select>
         <button class="btn" id="shuffle">Make teams</button></div></div>
-    <div class="teams" id="teams"><p class="muted">Needs at least 4 people.</p></div>
+    <div class="teams" id="teams"><p class="muted">Teams appear from 2 people.</p></div>
   </section>
   <p class="status" id="status"></p>
 </main>
@@ -159,8 +159,8 @@ async function load(){
 
 function buildTeams(){
   const box=document.getElementById("teams"), size=+document.getElementById("tsize").value;
-  if(rows.length<4){box.innerHTML=`<p class="muted">Needs at least 4 people. ${rows.length} so far.</p>`;return;}
-  const k=Math.max(2,Math.round(rows.length/size)), cap=Math.ceil(rows.length/k);
+  if(rows.length<2){box.innerHTML=`<p class="muted">Teams appear from 2 people. ${rows.length} so far.</p>`;return;}
+  const k=Math.max(1,Math.round(rows.length/size)), cap=Math.ceil(rows.length/k);
   const cover=t=>STEPS.map((_,i)=>t.length?Math.max(...t.map(r=>r.scores[i])):3);
   const val=t=>cover(t).reduce((a,v)=>a+Math.min(v,13),0);
   let best=null,bestScore=-1;
@@ -179,7 +179,8 @@ function buildTeams(){
       <ul>${t.map(r=>`<li><b>${esc(label(r))}</b> · ${STEPS[topStep(r.scores)]}</li>`).join("")}</ul>
       <p class="gap">Thinnest spot: ${STEPS[weak]}</p></div>`}).join("");
 }
-document.getElementById("shuffle").onclick=buildTeams;
+document.getElementById("shuffle").onclick=()=>{const b=document.getElementById("shuffle");buildTeams();b.textContent="New mix";
+  document.getElementById("teams").animate?.([{opacity:.3},{opacity:1}],{duration:300});};
 document.getElementById("tsize").onchange=buildTeams;
 load(); setInterval(load,10000);
 </script>
