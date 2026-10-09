@@ -51,6 +51,13 @@ p{margin:0}
 .btn{font:inherit;cursor:pointer;border:1px solid var(--line);background:transparent;color:var(--fg);padding:8px 14px;border-radius:999px}
 .empty{padding:40px 0;text-align:center}
 .status{font-size:.8rem;color:var(--muted)}
+.teams{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.team{border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:8px;background:var(--bg);min-width:0}
+.team h3{margin:0;font-family:var(--display);text-transform:uppercase;font-weight:400;font-size:1rem;display:flex;justify-content:space-between}
+.team h3 span{font-family:var(--body);font-size:.8rem;color:var(--accent);font-weight:700;text-transform:none}
+.team ul{margin:0;padding-left:1.1em;font-size:.88rem}
+.team .gap{font-size:.8rem;color:var(--muted)}
+.team svg{width:100%;max-width:240px;align-self:center}
 </style>
 </head>
 <body>
@@ -75,13 +82,22 @@ p{margin:0}
     <div class="head"><h2>Everyone's type</h2><span class="muted" style="font-size:.85rem">Tap one person to see their chart, tap a second to compare.</span></div>
     <div class="people" id="people"></div>
   </section>
+  <section class="panel">
+    <div class="head"><div><h2>Build balanced teams</h2>
+      <p class="muted" style="font-size:.9rem">Splits everyone into teams that cover as much of the circle as possible. Each team's chart shows its strongest member per step.</p></div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <label for="tsize" class="muted" style="font-size:.85rem">People per team</label>
+        <select id="tsize" class="btn"><option>2</option><option selected>3</option><option>4</option><option>5</option><option>6</option></select>
+        <button class="btn" id="shuffle">Make teams</button></div></div>
+    <div class="teams" id="teams"><p class="muted">Needs at least 4 people.</p></div>
+  </section>
   <p class="status" id="status"></p>
 </main>
 <script>
 const SUPABASE_URL="https://vzwcbcaeitafqmibzidn.supabase.co", SUPABASE_KEY="sb_publishable_mZvODs-FKfs7ckJ9WPaLgA_es449c_H";
 const STEPS=["Sense","Inquire","Envision","Prototype","Evaluate","Operationalise","Maintain","Optimise"];
 const TYPES=["The Nurturer","The Facilitator","The Dreamer","The Hacker","The Scientist","The Negotiator","The Captain","The Perfectionist"];
-let rows=[], sel=[];
+let rows=[], sel=[], teamsBuilt=false;
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const pct=v=>Math.round((v-3)/12*100);
 const topStep=s=>s.indexOf(Math.max(...s));
@@ -136,10 +152,35 @@ document.getElementById("clear").onclick=()=>{sel=[];draw();};
 async function load(){
   try{
     const r=await fetch(`${SUPABASE_URL}/rest/v1/results?select=id,name,scores,created_at&order=created_at.desc&limit=500`,{headers:{apikey:SUPABASE_KEY,Authorization:"Bearer "+SUPABASE_KEY}});
-    if(!r.ok) throw 0; rows=await r.json(); sel=sel.filter(id=>rows.some(x=>x.id===id)); draw();
+    if(!r.ok) throw 0; rows=await r.json(); sel=sel.filter(id=>rows.some(x=>x.id===id)); draw(); if(!teamsBuilt) buildTeams();
     document.getElementById("status").textContent="Updates every 10 seconds · last update "+new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit",second:"2-digit"});
   }catch(e){document.getElementById("status").textContent="Couldn't reach the results right now. Retrying in 10 seconds.";}
 }
+
+function buildTeams(){
+  const box=document.getElementById("teams"), size=+document.getElementById("tsize").value;
+  if(rows.length<4){box.innerHTML=`<p class="muted">Needs at least 4 people. ${rows.length} so far.</p>`;return;}
+  const k=Math.max(2,Math.round(rows.length/size)), cap=Math.ceil(rows.length/k);
+  const cover=t=>STEPS.map((_,i)=>t.length?Math.max(...t.map(r=>r.scores[i])):3);
+  const val=t=>cover(t).reduce((a,v)=>a+Math.min(v,13),0);
+  let best=null,bestScore=-1;
+  for(let trial=0;trial<40;trial++){
+    const ppl=[...rows].sort(()=>Math.random()-.5).sort((a,b)=>Math.max(...b.scores)-Math.max(...a.scores)+ (Math.random()-.5)*2);
+    const teams=Array.from({length:k},()=>[]);
+    ppl.forEach(p=>{let bi=-1,bg=-1e9;teams.forEach((t,i)=>{if(t.length>=cap)return;const g=val([...t,p])-val(t)-t.length*.01;if(g>bg){bg=g;bi=i}});teams[bi].push(p);});
+    const sc=Math.min(...teams.map(val))*100+teams.reduce((a,t)=>a+val(t),0);
+    if(sc>bestScore){bestScore=sc;best=teams;}
+  }
+  teamsBuilt=true;
+  box.innerHTML=best.map((t,n)=>{const c=cover(t);const pc=Math.round(c.reduce((a,v)=>a+(v-3)/12,0)/8*100);
+    const weak=c.indexOf(Math.min(...c));
+    return `<div class="team"><h3>Team ${n+1}<span>${pc}% of the circle</span></h3>
+      ${radar([{s:c,col:"var(--accent)",w:2.5,op:1,fill:.2}])}
+      <ul>${t.map(r=>`<li><b>${esc(label(r))}</b> · ${STEPS[topStep(r.scores)]}</li>`).join("")}</ul>
+      <p class="gap">Thinnest spot: ${STEPS[weak]}</p></div>`}).join("");
+}
+document.getElementById("shuffle").onclick=buildTeams;
+document.getElementById("tsize").onchange=buildTeams;
 load(); setInterval(load,10000);
 </script>
 </body>
