@@ -84,7 +84,7 @@ const TYPES=["The Nurturer","The Facilitator","The Dreamer","The Hacker","The Sc
 let rows=[], sel=[];
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const pct=v=>Math.round((v-3)/12*100);
-const top=s=>s.indexOf(Math.max(...s));
+const topStep=s=>s.indexOf(Math.max(...s));
 const label=r=>r.name||"Anonymous";
 
 function radar(sets){
@@ -123,10 +123,10 @@ function draw(){
   const order=av.map((_,i)=>i).sort((x,y)=>av[y]-av[x]);
   document.getElementById("insight").innerHTML = rows.length<2
     ? `With one result so far, this shows a single person. The group picture appears from the second answer.`
-    : `This group is strongest at <b>${STEPS[order[0]]}</b> and <b>${STEPS[order[1]]}</b>. The weakest link is <b>${STEPS[order[7]]}</b>: ${rows.filter(r=>top(r.scores)===order[7]).length?"only a few people lead there, so protect them":"nobody here leads there yet, so projects may stall at that step"}.`;
+    : `This group is strongest at <b>${STEPS[order[0]]}</b> and <b>${STEPS[order[1]]}</b>. The weakest link is <b>${STEPS[order[7]]}</b>: ${rows.filter(r=>topStep(r.scores)===order[7]).length?"only a few people lead there, so protect them":"nobody here leads there yet, so projects may stall at that step"}.`;
   document.getElementById("bars").innerHTML=order.map(i=>`<div class="row"><span>${STEPS[i]}</span><span class="bar"><i style="width:${pct(av[i])}%"></i></span><span class="num">${pct(av[i])}</span></div>`).join("");
   const ppl=document.getElementById("people");
-  ppl.innerHTML=rows.map(r=>{const t=top(r.scores);const c=sel[0]===r.id?"sel1":sel[1]===r.id?"sel2":"";
+  ppl.innerHTML=rows.map(r=>{const t=topStep(r.scores);const c=sel[0]===r.id?"sel1":sel[1]===r.id?"sel2":"";
     return `<button class="person ${c}" data-id="${r.id}"><b>${esc(label(r))}</b><span>${TYPES[t]} · ${STEPS[t]}</span></button>`}).join("");
   ppl.querySelectorAll(".person").forEach(b=>b.onclick=()=>{const id=b.dataset.id;
     if(sel.includes(id)) sel=sel.filter(x=>x!==id); else sel=sel.length>=2?[sel[0],id]:[...sel,id]; draw(); window.scrollTo({top:0,behavior:"smooth"});});
