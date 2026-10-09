@@ -109,7 +109,7 @@ const A = [
 
 const Q=[]; A.forEach((a,i)=>a.q.forEach(t=>Q.push({a:i,t})));
 for(let i=Q.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[Q[i],Q[j]]=[Q[j],Q[i]];}
-let answers=new Array(Q.length).fill(0), idx=0, friend=null;
+let answers=new Array(Q.length).fill(0), idx=0, friend=null, userName="";
 const app=document.getElementById("app");
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const base=()=>location.href.split("#")[0];
@@ -130,10 +130,15 @@ function intro(){
     <h1>Where do you lead in the circle?</h1>
     <p>Full Circle Leadership sees leadership as eight steps that every project needs, from sensing a problem to improving the solution. Most people are strong in a few and quieter in others. Find out where your strengths sit.</p>
     <div class="steps">${A.map(a=>`<div><b>${a.step}</b><span class="muted">${a.name}</span></div>`).join("")}</div>
+    <label for="nm">Your name<input id="nm" maxlength="40" autocomplete="name" placeholder="First and last name" value="${esc(store.get("fcl_name")||"")}"></label>
+    <p class="toast" id="err" role="alert"></p>
     <div class="actions"><button class="btn" id="go">Start the quiz</button>
     ${store.get("fcl_mine")?`<button class="btn ghost" id="mine">See my last result</button>`:""}</div>
     <p class="note">Based on the Full Circle Leadership model by Alanna Irving (Enspiral). <a href="https://medium.com/enspiral-tales/beyond-dreamers-vs-doers-full-circle-leadership-869557da1248" target="_blank" rel="noopener">Read the original article</a>. An informal self-reflection tool.</p>`;
-  go("go",()=>{idx=0;answers.fill(0);question();});
+  const start=()=>{const v=document.getElementById("nm").value.trim();
+    if(v.length<2){document.getElementById("err").textContent="Add your name to start, so your result shows up for the group.";document.getElementById("nm").focus();return;}
+    userName=v; store.set("fcl_name",v); idx=0;answers.fill(0);question();};
+  go("go",start); document.getElementById("nm").onkeydown=e=>{if(e.key==="Enter")start();};
   go("mine",()=>{location.hash="#/r/"+store.get("fcl_mine");});
 }
 function go(id,fn){const el=document.getElementById(id); if(el) el.onclick=fn;}
@@ -152,20 +157,12 @@ function question(){
 }
 function scores(){const s=new Array(8).fill(0); Q.forEach((q,i)=>s[q.a]+=answers[i]); return s;}
 
-function saveScreen(){
-  app.innerHTML=`
-    <span class="eyebrow">Almost there</span>
-    <h2>Put a name on your circle</h2>
-    <p class="muted">Your friends will see this name when you share your result. Leave it empty to stay anonymous.</p>
-    <label for="nm">Your name<input id="nm" maxlength="40" autocomplete="given-name" placeholder="e.g. Emilia"></label>
-    <button class="btn" id="see">See my result</button><p class="toast" id="toast"></p>`;
-  go("see",async()=>{
-    const b=document.getElementById("see"); b.disabled=true; b.textContent="Saving…";
-    const s=scores(), name=document.getElementById("nm").value.trim();
-    try{ const row=await saveResult(name,s); store.set("fcl_mine",row.id);
-      location.hash = friend?`#/r/${friend.id}/vs/${row.id}`:`#/r/${row.id}`; }
-    catch(e){ document.getElementById("toast").textContent="Couldn't save right now. Showing your result without a share link."; render({id:null,name,scores:s}); }
-  });
+async function saveScreen(){
+  app.innerHTML=`<p class="muted">Saving your result…</p>`;
+  const s=scores();
+  try{ const row=await saveResult(userName,s); store.set("fcl_mine",row.id);
+    location.hash = friend?`#/r/${friend.id}/vs/${row.id}`:`#/r/${row.id}`; }
+  catch(e){ render({id:null,name:userName,scores:s}); document.getElementById("toast").textContent="Couldn't save right now, so this result won't appear for the group. Check your connection and retake it."; }
 }
 
 function radar(sets){
@@ -218,7 +215,7 @@ function render(me, other){
     <p class="toast" id="toast"></p>
     <p class="note">Nobody covers the whole circle alone. Teams need all eight kinds of leadership, so compare charts and see who completes yours.</p>`;
   go("home",()=>{friend=null;location.hash="";intro();});
-  go("cmp",()=>{friend=me;answers.fill(0);idx=0;question();});
+  go("cmp",()=>{friend=me;intro();});
   go("share",async()=>{
     const url=`${base()}#/r/${me.id}`, t=document.getElementById("toast");
     if(navigator.share){try{await navigator.share({title:"My Full Circle Leadership result",url});return;}catch(e){}}
